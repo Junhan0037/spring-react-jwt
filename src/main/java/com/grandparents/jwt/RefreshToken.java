@@ -1,5 +1,6 @@
 package com.grandparents.jwt;
 
+import com.grandparents.common.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,17 +8,14 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 @Getter @Builder
 @NoArgsConstructor @AllArgsConstructor
-public class RefreshToken {
+public class RefreshToken extends BaseTimeEntity {
 
-    @Id @GeneratedValue
-    private Long id;
-
+    @Id
     @Column(name = "token_key")
     private String key;
 
