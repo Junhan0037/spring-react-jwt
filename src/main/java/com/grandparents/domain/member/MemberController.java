@@ -1,17 +1,14 @@
 package com.grandparents.domain.member;
 
-import com.grandparents.domain.member.form.SignUpForm;
 import com.grandparents.jwt.TokenDto;
 import com.grandparents.jwt.TokenRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
-@Controller
+@RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class MemberController {
@@ -19,15 +16,9 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/hello")
-    @ResponseBody
-    public String hello() {
-        return "안녕하세요. 현재 서버시간은 " + new Date() + "입니다. \n";
-    }
-
-    @GetMapping("/sign-up")
-    public String signUpForm(Model model) {
-        model.addAttribute("signUpForm", new SignUpForm());
-        return "member/sign-up";
+    public ResponseEntity<String> hello() {
+        String result = "안녕하세요. 현재 서버시간은 " + new Date() + "입니다. \n";
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/sign-up")
