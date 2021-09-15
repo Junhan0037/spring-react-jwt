@@ -2,7 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.5.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id 'com.github.node-gradle.node' version '3.1.0'
+    id 'com.github.node-gradle.node' version '3.1.0' // node 추가를 위한 플러그인
 }
 
 group = 'com'
@@ -98,22 +98,27 @@ node {
 
 def webappDir = "$projectDir/src/main/webapp"
 
-task deleteBuildfile(type: Delete) {
+task deleteBuildfile(type: Delete) { // 프론트엔드 기존 build 파일 삭제
     delete 'src/main/webapp/build'
 }
 
-task appNpmInstall(type: NpmTask) {
+task appNpmInstall(type: NpmTask) { // npm install
+    workingDir = file("${webappDir}")
+    args = ["install"]
+}
+
+task appNpmBuild(type: NpmTask) { // npm run build
     workingDir = file("${webappDir}")
     args = ["run", "build"]
 }
 
-task copyWebApp(type: Copy) {
+task copyWebApp(type: Copy) { // build 파일 복사 이동
     from 'src/main/webapp/build'
     into 'build/resources/main/static'
 }
 
 appNpmInstall.dependsOn(deleteBuildfile)
-
-copyWebApp.dependsOn(appNpmInstall)
+appNpmBuild.dependsOn(appNpmInstall)
+copyWebApp.dependsOn(appNpmBuild)
 
 compileJava.dependsOn(copyWebApp)
