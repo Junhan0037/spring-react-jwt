@@ -52,13 +52,13 @@ public class TokenProvider {
                                 .setSubject(authentication.getName())
                                 .claim(AUTHORITIES_KEY, authorities)
                                 .setExpiration(accessTokenExpireIn)
-                                .signWith(key, SignatureAlgorithm.ES512)
+                                .signWith(key, SignatureAlgorithm.HS512)
                                 .compact();
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
                                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-                                .signWith(key)
+                                .signWith(key, SignatureAlgorithm.HS512)
                                 .compact();
 
         return TokenDto.builder()
