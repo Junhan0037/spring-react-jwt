@@ -5,10 +5,10 @@ import com.grandparents.jwt.dto.TokenDto;
 
 public interface MemberService {
 
-    MemberDto.Response signUp(MemberDto.Request memberRequestDto);
+    MemberDto.ResponseDto processNewAccount(MemberDto.RequestDto memberRequestDto);
 
-    TokenDto.Response login(MemberDto.Request memberRequestDto);
+    TokenDto.ResponseDto login(MemberDto.RequestDto memberRequestDto);
 
-    TokenDto.Response reIssue(TokenDto.Request tokenRequestDto);
+    TokenDto.ResponseDto reIssue(TokenDto.RequestDto tokenRequestDto);
 
 }

@@ -1,8 +1,12 @@
 package com.grandparents.domain.member;
 
+import com.grandparents.config.AppProperties;
 import com.grandparents.domain.member.dto.MemberDto;
-import com.grandparents.jwt.*;
+import com.grandparents.jwt.RefreshToken;
+import com.grandparents.jwt.RefreshTokenRepository;
+import com.grandparents.jwt.TokenProvider;
 import com.grandparents.jwt.dto.TokenDto;
+import com.grandparents.mail.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,24 +34,45 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final AppProperties appProperties;
+    private final EmailService emailService;
 
     @Override
-    @Transactional
-    public MemberDto.Response signUp(MemberDto.Request memberRequestDto) {
-        if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
-            throw new RuntimeException("이미 가입되어 있는 유저입니다.");
-        }
-
-        Member member = memberRequestDto.toMember(passwordEncoder);
-
-        Member savedMember = memberRepository.save(member);
-
-        return modelMapper.map(savedMember, MemberDto.Response.class);
+    public MemberDto.ResponseDto processNewAccount(MemberDto.RequestDto memberRequestDto) {
+        Member newMember = saveNewAccount(memberRequestDto);
+//        sendSignUpConfirmEmail(newMember);
+        return modelMapper.map(newMember, MemberDto.ResponseDto.class);
     }
 
+    private Member saveNewAccount(MemberDto.RequestDto memberRequestDto) {
+        memberRequestDto.setPassword(passwordEncoder.encode(memberRequestDto.getPassword()));
+        memberRequestDto.setRole(Role.USER);
+        Member member = modelMapper.map(memberRequestDto, Member.class);
+        return memberRepository.save(member);
+    }
+
+//    private void sendSignUpConfirmEmail(Member newMember) {
+//        Context context = new Context();
+//        context.setVariable("link", "/check-email-token?token=" + newMember.getEmailCheckToken() + "&email=" + newMember.getEmail());
+//        context.setVariable("nickname", newMember.getName());
+//        context.setVariable("linkName", "이메일 인증하기");
+//        context.setVariable("message", "GrandParents 서비스를 이용하려면 링크를 클릭하세요.");
+//        context.setVariable("host", appProperties.getHost());
+//
+//        String message = templateEngine.process("mail/simple-link", context);
+//
+//        EmailMessage emailMessage = EmailMessage.builder()
+//                .to(newMember.getEmail())
+//                .subject("PartyHelper, 회원 가입 인증")
+//                .message(message)
+//                .build();
+//
+//        emailService.sendEmail(emailMessage);
+//    }
+
     @Override
     @Transactional
-    public TokenDto.Response login(MemberDto.Request memberRequestDto) {
+    public TokenDto.ResponseDto login(MemberDto.RequestDto memberRequestDto) {
         // Login ID/PW 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = memberRequestDto.toAuthentication();
 
@@ -55,7 +80,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 인증 정보를 기반으로 JWT 토큰 생성
-        TokenDto.Response tokenDto = tokenProvider.generateTokenDto(authentication);
+        TokenDto.ResponseDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
         // RefreshToken 저장
         RefreshToken refreshToken = RefreshToken.builder()
@@ -73,10 +98,9 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         return memberRepository.findByEmail(username).map(this::createUserDetails).orElseThrow(() -> new UsernameNotFoundException(username + " -> 데이터베이스에서 찾을 수 없습니다."));
     }
 
-
     @Override
     @Transactional
-    public TokenDto.Response reIssue(TokenDto.Request tokenRequestDto) {
+    public TokenDto.ResponseDto reIssue(TokenDto.RequestDto tokenRequestDto) {
         // 토큰 검증
         if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
             throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
@@ -94,7 +118,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         }
 
         // 새로운 토큰 생성
-        TokenDto.Response newTokenDto = tokenProvider.generateTokenDto(authentication);
+        TokenDto.ResponseDto newTokenDto = tokenProvider.generateTokenDto(authentication);
 
         // 저장소 업데이트
         RefreshToken newRefreshToken = refreshToken.updateToken(newTokenDto.getRefreshToken());

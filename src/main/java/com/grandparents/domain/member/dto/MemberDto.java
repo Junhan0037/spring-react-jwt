@@ -1,30 +1,34 @@
 package com.grandparents.domain.member.dto;
 
-import com.grandparents.domain.member.Member;
 import com.grandparents.domain.member.Role;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 public class MemberDto {
 
-    @Getter
+    @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Request {
+    public static class RequestDto {
+        @NotBlank
+        @Email
         private String email;
+
+        @NotBlank
+        @Length(min = 8, max = 50)
         private String password;
 
-        public Member toMember(PasswordEncoder passwordEncoder) {
-            return Member.builder()
-                    .email(email)
-                    .password(passwordEncoder.encode(password))
-                    .role(Role.USER)
-                    .build();
-        }
+        @NotBlank
+        @Length(min = 8, max = 50)
+        private String passwordConfirm;
+
+        private Role role;
 
         public UsernamePasswordAuthenticationToken toAuthentication() {
             return new UsernamePasswordAuthenticationToken(email, password);
@@ -32,11 +36,10 @@ public class MemberDto {
 
     }
 
-    @Getter
-    @Setter
+    @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Response {
+    public static class ResponseDto {
         private String email;
     }
 

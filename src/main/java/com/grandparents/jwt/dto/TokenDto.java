@@ -1,23 +1,22 @@
 package com.grandparents.jwt.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 public class TokenDto {
 
-    @Getter
+    @Data
     @NoArgsConstructor
-    public static class Request {
+    @AllArgsConstructor
+    public static class RequestDto {
         private String accessToken;
         private String refreshToken;
     }
 
-    @Getter
+    @Data
     @Builder
-    @NoArgsConstructor @AllArgsConstructor
-    public static class Response {
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ResponseDto {
         private String grantType;
         private String accessToken;
         private String refreshToken;

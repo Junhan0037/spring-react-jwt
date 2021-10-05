@@ -41,7 +41,7 @@ public class TokenProvider {
      * @param authentication
      * @return authentication
      */
-    public TokenDto.Response generateTokenDto(Authentication authentication) {
+    public TokenDto.ResponseDto generateTokenDto(Authentication authentication) {
         // 권한 불러오기
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
 
@@ -62,7 +62,7 @@ public class TokenProvider {
                                 .signWith(key, SignatureAlgorithm.HS512)
                                 .compact();
 
-        return TokenDto.Response.builder()
+        return TokenDto.ResponseDto.builder()
                         .grantType(BEARER_TYPE)
                         .accessToken(accessToken)
                         .accessTokenExpiresIn(accessTokenExpireIn.getTime())
