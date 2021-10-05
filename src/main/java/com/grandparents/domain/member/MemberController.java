@@ -1,7 +1,7 @@
 package com.grandparents.domain.member;
 
-import com.grandparents.jwt.TokenDto;
-import com.grandparents.jwt.TokenRequestDto;
+import com.grandparents.domain.member.dto.MemberDto;
+import com.grandparents.jwt.dto.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,17 +22,19 @@ public class MemberController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<MemberResponseDto> signUp(@RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<MemberDto.Response> signUp(@RequestBody MemberDto.Request memberRequestDto) {
+        memberService.signUp(memberRequestDto);
+
         return ResponseEntity.ok(memberService.signUp(memberRequestDto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<TokenDto.Response> login(@RequestBody MemberDto.Request memberRequestDto) {
         return ResponseEntity.ok(memberService.login(memberRequestDto));
     }
 
     @PostMapping("/re-issue")
-    public ResponseEntity<TokenDto> reIssue(@RequestBody TokenRequestDto tokenRequestDto) {
+    public ResponseEntity<TokenDto.Response> reIssue(@RequestBody TokenDto.Request tokenRequestDto) {
         return ResponseEntity.ok(memberService.reIssue(tokenRequestDto));
     }
 

@@ -19,7 +19,7 @@ public class Member extends BaseTimeEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Authority authority;
+    private Role role;
 
     private boolean emailVerified;
 

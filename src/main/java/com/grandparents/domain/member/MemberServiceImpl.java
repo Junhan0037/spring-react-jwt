@@ -1,6 +1,8 @@
 package com.grandparents.domain.member;
 
+import com.grandparents.domain.member.dto.MemberDto;
 import com.grandparents.jwt.*;
+import com.grandparents.jwt.dto.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +33,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
     @Override
     @Transactional
-    public MemberResponseDto signUp(MemberRequestDto memberRequestDto) {
+    public MemberDto.Response signUp(MemberDto.Request memberRequestDto) {
         if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다.");
         }
@@ -40,12 +42,12 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
         Member savedMember = memberRepository.save(member);
 
-        return modelMapper.map(savedMember, MemberResponseDto.class);
+        return modelMapper.map(savedMember, MemberDto.Response.class);
     }
 
     @Override
     @Transactional
-    public TokenDto login(MemberRequestDto memberRequestDto) {
+    public TokenDto.Response login(MemberDto.Request memberRequestDto) {
         // Login ID/PW 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = memberRequestDto.toAuthentication();
 
@@ -53,7 +55,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 인증 정보를 기반으로 JWT 토큰 생성
-        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+        TokenDto.Response tokenDto = tokenProvider.generateTokenDto(authentication);
 
         // RefreshToken 저장
         RefreshToken refreshToken = RefreshToken.builder()
@@ -74,7 +76,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
     @Override
     @Transactional
-    public TokenDto reIssue(TokenRequestDto tokenRequestDto) {
+    public TokenDto.Response reIssue(TokenDto.Request tokenRequestDto) {
         // 토큰 검증
         if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
             throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
@@ -92,7 +94,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         }
 
         // 새로운 토큰 생성
-        TokenDto newTokenDto = tokenProvider.generateTokenDto(authentication);
+        TokenDto.Response newTokenDto = tokenProvider.generateTokenDto(authentication);
 
         // 저장소 업데이트
         RefreshToken newRefreshToken = refreshToken.updateToken(newTokenDto.getRefreshToken());
@@ -104,7 +106,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
 
     private UserDetails createUserDetails(Member member) {
-        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getAuthority().toString());
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getRole().toString());
         return new User(String.valueOf(member.getId()), member.getPassword(), Collections.singleton(grantedAuthority));
     }
 

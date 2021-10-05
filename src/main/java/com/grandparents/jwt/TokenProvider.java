@@ -1,5 +1,6 @@
 package com.grandparents.jwt;
 
+import com.grandparents.jwt.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -40,7 +41,7 @@ public class TokenProvider {
      * @param authentication
      * @return authentication
      */
-    public TokenDto generateTokenDto(Authentication authentication) {
+    public TokenDto.Response generateTokenDto(Authentication authentication) {
         // 권한 불러오기
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
 
@@ -61,7 +62,7 @@ public class TokenProvider {
                                 .signWith(key, SignatureAlgorithm.HS512)
                                 .compact();
 
-        return TokenDto.builder()
+        return TokenDto.Response.builder()
                         .grantType(BEARER_TYPE)
                         .accessToken(accessToken)
                         .accessTokenExpiresIn(accessTokenExpireIn.getTime())

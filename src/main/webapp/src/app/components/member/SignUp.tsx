@@ -10,7 +10,7 @@ const SignUp = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const signUpState = useTypedSelector(state => state.user);
+  const userState = useTypedSelector(state => state.user);
 
   const onChangeEmail = (e: any) => {
     setEmail(e.target.value);

@@ -1,14 +1,14 @@
 package com.grandparents.domain.member;
 
-import com.grandparents.jwt.TokenDto;
-import com.grandparents.jwt.TokenRequestDto;
+import com.grandparents.domain.member.dto.MemberDto;
+import com.grandparents.jwt.dto.TokenDto;
 
 public interface MemberService {
 
-    MemberResponseDto signUp(MemberRequestDto memberRequestDto);
+    MemberDto.Response signUp(MemberDto.Request memberRequestDto);
 
-    TokenDto login(MemberRequestDto memberRequestDto);
+    TokenDto.Response login(MemberDto.Request memberRequestDto);
 
-    TokenDto reIssue(TokenRequestDto tokenRequestDto);
+    TokenDto.Response reIssue(TokenDto.Request tokenRequestDto);
 
 }
