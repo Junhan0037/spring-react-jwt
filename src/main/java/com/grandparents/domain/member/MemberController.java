@@ -18,7 +18,7 @@ public class MemberController {
     private final MemberRequestDtoValidator memberRequestDtoValidator;
     private final MemberService memberService;
 
-    @InitBinder("MemberDto.RequestDto")
+    @InitBinder
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(memberRequestDtoValidator);
     }

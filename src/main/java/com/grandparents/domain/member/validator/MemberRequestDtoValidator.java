@@ -19,13 +19,15 @@ public class MemberRequestDtoValidator implements Validator {
     }
 
     @Override
-    public void validate(Object target, Errors errors) { // 중복 검사
-        MemberDto.RequestDto memberRequestDto = (MemberDto.RequestDto) target;
-        if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
-            errors.rejectValue("email", "invalid.email", new Object[]{memberRequestDto.getEmail()}, "이미 사용중인 이메일입니다.");
-        }
-        if (!memberRequestDto.getPassword().equals(memberRequestDto.getPasswordConfirm())) {
-            errors.rejectValue("passwordConfirm", "wrong.value", "입력한 패스워드가 일치하지 않습니다.");
+    public void validate(Object target, Errors errors) {
+        if (target instanceof MemberDto.RequestDto) {
+            MemberDto.RequestDto memberRequestDto = (MemberDto.RequestDto) target;
+            if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
+                errors.rejectValue("email", "invalid.email", new Object[]{memberRequestDto.getEmail()}, "이미 사용중인 이메일입니다.");
+            }
+            if (!memberRequestDto.getPassword().equals(memberRequestDto.getPasswordConfirm())) {
+                errors.rejectValue("passwordConfirm", "wrong.value", "입력한 패스워드가 일치하지 않습니다.");
+            }
         }
     }
 
