@@ -6,6 +6,7 @@ import com.grandparents.jwt.RefreshToken;
 import com.grandparents.jwt.RefreshTokenRepository;
 import com.grandparents.jwt.TokenProvider;
 import com.grandparents.jwt.dto.TokenDto;
+import com.grandparents.mail.EmailMessage;
 import com.grandparents.mail.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,6 +22,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.util.Collections;
 
@@ -34,13 +37,14 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final TemplateEngine templateEngine;
     private final AppProperties appProperties;
     private final EmailService emailService;
 
     @Override
     public MemberDto.ResponseDto processNewAccount(MemberDto.RequestDto memberRequestDto) {
         Member newMember = saveNewAccount(memberRequestDto);
-//        sendSignUpConfirmEmail(newMember);
+        sendSignUpConfirmEmail(newMember);
         return modelMapper.map(newMember, MemberDto.ResponseDto.class);
     }
 
@@ -51,24 +55,24 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         return memberRepository.save(member);
     }
 
-//    private void sendSignUpConfirmEmail(Member newMember) {
-//        Context context = new Context();
-//        context.setVariable("link", "/check-email-token?token=" + newMember.getEmailCheckToken() + "&email=" + newMember.getEmail());
-//        context.setVariable("nickname", newMember.getName());
-//        context.setVariable("linkName", "이메일 인증하기");
-//        context.setVariable("message", "GrandParents 서비스를 이용하려면 링크를 클릭하세요.");
-//        context.setVariable("host", appProperties.getHost());
-//
-//        String message = templateEngine.process("mail/simple-link", context);
-//
-//        EmailMessage emailMessage = EmailMessage.builder()
-//                .to(newMember.getEmail())
-//                .subject("PartyHelper, 회원 가입 인증")
-//                .message(message)
-//                .build();
-//
-//        emailService.sendEmail(emailMessage);
-//    }
+    private void sendSignUpConfirmEmail(Member newMember) {
+        Context context = new Context();
+        context.setVariable("link", "/check-email-token?token=" + newMember.getEmailCheckToken() + "&email=" + newMember.getEmail());
+        context.setVariable("name", newMember.getName());
+        context.setVariable("linkName", "이메일 인증하기");
+        context.setVariable("message", "GrandParents 서비스를 이용하려면 링크를 클릭하세요.");
+        context.setVariable("host", appProperties.getHost());
+
+        String message = templateEngine.process("mail/simple-link", context);
+
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(newMember.getEmail())
+                .subject("GrandParents, 회원 가입 인증")
+                .message(message)
+                .build();
+
+        emailService.sendEmail(emailMessage);
+    }
 
     @Override
     @Transactional
