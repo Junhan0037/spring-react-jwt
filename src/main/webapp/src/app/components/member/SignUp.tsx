@@ -1,16 +1,13 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {Button, Form} from "react-bootstrap";
 import {useDispatch} from "react-redux";
-import {useTypedSelector} from "../../config/rootReducer";
-import client from "../../config/client";
-import {user} from "./user";
+import userSlice from "./user";
 
 
 const SignUp = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const userState = useTypedSelector(state => state.user);
 
   const onChangeEmail = (e: any) => {
     setEmail(e.target.value);
@@ -19,18 +16,9 @@ const SignUp = () => {
     setPassword(e.target.value);
   }
 
-  const signUp = async () => {
-    const param = {email, password};
-    return await client.post('/auth/sign-up', param);
-  }
-
-  const submit = () => {
-    signUp().then(response => {
-      dispatch(user({
-        email: response.data
-      }))
-    })
-  }
+  const submit = useCallback(() => {
+    dispatch(userSlice.actions.signUp({email: email, password: password}));
+  }, []);
 
   return (
     <>

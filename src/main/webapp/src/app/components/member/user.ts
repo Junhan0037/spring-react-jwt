@@ -1,38 +1,35 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import axios from "axios";
 
-const delay = (time: any, value: any) =>
-  new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(value)
-    }, time)
-  })
+const signUpThunk = createAsyncThunk('/auth/sign-up', async (data, thunkAPI) => {
+  return await axios.post('/auth/sign-up', data);
+})
 
-export const user = createAsyncThunk(
-    'user',
-    async (data: any, thunkAPI) => {
-        return await delay(100, data)
-    }
-)
-
-export interface signUpState {
+export interface userState {
   email: string,
+  isLogin: boolean,
 }
 
-const initialState: signUpState = {
-  email: ''
+const initialState: userState = {
+  email: '',
+  isLogin: false,
 }
 
 const userSlice = createSlice({
-  name: 'user',
+  name: 'signUp',
   initialState,
   reducers: {
-      submit: (state, action) => action.payload
+    signUp: (state: any, action: PayloadAction<{ email: string; password: string }>) => {
+      console.log(state, action);
+      state.email = action.payload.email;
+      state.isLogin = true;
+    }
   },
   extraReducers: builder =>
     builder
-      .addCase(user.pending, (state, action) => {})
-      .addCase(user.fulfilled, (state: signUpState, action: any) => {})
-      .addCase(user.rejected, (state, action) => {})
+      .addCase(signUpThunk.pending, (state, action) => {})
+      .addCase(signUpThunk.fulfilled, (state, action) => {})
+      .addCase(signUpThunk.rejected, (state, action) => {}),
 })
 
 export default userSlice;
