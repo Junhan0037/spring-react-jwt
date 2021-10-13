@@ -1,10 +1,8 @@
-import React from "react";
-import {BrowserRouter, Route, Switch} from "react-router-dom";
-import Home from "../components/home/Home";
+import {BrowserRouter, Switch, Route} from "react-router-dom";
 import NotFound from "../components/error/NotFound";
+import Home from "../components/home/Home";
 import Navbars from "../components/home/Navbars";
-import Login from "../components/member/Login";
-import SignUp from "../components/member/SignUp";
+import CounterApp from "../components/counter/CounterApp";
 
 const Router = () => {
   return (
@@ -13,8 +11,7 @@ const Router = () => {
       <br />
       <Switch>
         <Route path="/" component={Home} exact />
-        <Route path="/auth/login" component={Login} exact />
-        <Route path="/auth/sign-up" component={SignUp} exact />
+        <Route path="/counter" component={CounterApp} exact />
         <Route component={NotFound} />
       </Switch>
     </BrowserRouter>
