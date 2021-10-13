@@ -1,26 +1,21 @@
 import {Button, Form} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
-import {selectMember, signUpAsync} from "./memberSlice";
-import axios from "axios";
+import {signUpAsync} from "./memberSlice";
 
 const SignUp = () => {
   const dispatch = useDispatch();
-  const memberState = useSelector(selectMember)
+
+  const memberEmail = useSelector((state: any) => state.member.email);
+  const memberStatus = useSelector((state: any) => state.member.status);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
   const submit = () => {
-    const params = {email, password, passwordConfirm}
-    axios.post('/auth/sign-up', params).then((response) => {
-      if (response.data) {
-        console.log(response.data);
-        dispatch(signUpAsync(response.data)); // Error
-      } else {
-        alert('failed to');
-      }
-    })
+    const params = {email, password, passwordConfirm};
+    dispatch(signUpAsync(params));
   }
 
   return (
@@ -58,7 +53,8 @@ const SignUp = () => {
           가입하기
         </Button>
 
-        <h1>{memberState}</h1>
+        <h1>{memberStatus}</h1>
+        <h1>{memberEmail}</h1>
       </Form>
     </>
   )
