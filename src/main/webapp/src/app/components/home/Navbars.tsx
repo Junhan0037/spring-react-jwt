@@ -21,6 +21,7 @@ const Navbars = () => {
                 Something else here
               </NavDropdown.Item>
             </NavDropdown>
+            <Nav.Link href="/counter">카운터 예제</Nav.Link>
             <Nav.Link href="#" disabled>
               미활성
             </Nav.Link>
