@@ -1,10 +1,8 @@
 import {configureStore} from "@reduxjs/toolkit";
-import rootReducer from "./rootReducer";
+import counterSlice from "../components/counter/counterSlice";
 
-const store = configureStore({
-  reducer: rootReducer,
-  middleware: [],
-  devTools: process.env.NODE_ENV !== 'production',
+export const store = configureStore({
+  reducer: {
+    counter: counterSlice.reducer
+  },
 })
-
-export default store;

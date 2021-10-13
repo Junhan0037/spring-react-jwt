@@ -1,4 +1,3 @@
-import React from "react";
 import {Button, Container, Form, FormControl, Nav, Navbar, NavDropdown} from "react-bootstrap";
 
 const Navbars = () => {
@@ -22,6 +21,7 @@ const Navbars = () => {
                 Something else here
               </NavDropdown.Item>
             </NavDropdown>
+            <Nav.Link href="/counter">카운터 예제</Nav.Link>
             <Nav.Link href="#" disabled>
               미활성
             </Nav.Link>
