@@ -2,6 +2,7 @@ import {Button, Form, Spinner} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
 import {signUpAsync} from "./memberSlice";
+import {Redirect} from "react-router-dom";
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -64,6 +65,7 @@ const SignUp = () => {
       </Button>
 
       {memberStatus === 'loading' && <Spinner animation="border" />}
+      {memberStatus === 'success' && <Redirect to="/" />}
     </Form>
   )
 }
