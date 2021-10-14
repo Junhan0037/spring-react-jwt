@@ -5,6 +5,7 @@ import com.grandparents.domain.member.validator.MemberRequestDtoValidator;
 import com.grandparents.jwt.dto.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,11 @@ public class MemberController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<MemberDto.ResponseDto> signUp(@Valid @RequestBody MemberDto.RequestDto memberRequestDto) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody MemberDto.RequestDto memberRequestDto, Errors errors) {
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(errors.getAllErrors());
+        }
+
         return ResponseEntity.ok(memberService.processNewAccount(memberRequestDto));
     }
 

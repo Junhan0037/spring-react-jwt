@@ -4,11 +4,13 @@ import http from "../../config/axios-interceptor";
 export interface memberState {
   email: string,
   status: string,
+  error: any,
 }
 
 const initialState: memberState = {
   email: '',
   status: 'idle',
+  error: [],
 }
 
 export const signUpAsync = createAsyncThunk('member/signUp', async (params: any, thunkAPI: any) => {
@@ -38,9 +40,15 @@ export const memberSlice = createSlice({
       .addCase(signUpAsync.fulfilled, (state, action) => {
         const {email} = action.payload;
         state.email = email;
-        state.status = 'idle';
+        state.status = 'success';
       })
-      .addCase(signUpAsync.rejected, (state, action) => {
+      .addCase(signUpAsync.rejected, (state, action: any) => {
+        state.error = [];
+        const errors = action.payload;
+        errors.forEach((error: any) => {
+          const {defaultMessage, field} = error;
+          state.error = [...state.error, {defaultMessage, field}];
+        })
         state.status = 'error';
       })
   }
