@@ -10,6 +10,7 @@ const SignUp = () => {
   const memberStatus = useSelector((state: any) => state.member.status);
   const memberError = useSelector((state: any) => state.member.error);
 
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -21,7 +22,7 @@ const SignUp = () => {
       return;
     }
 
-    const params = {email, password, passwordConfirm, userType};
+    const params = {name, email, password, passwordConfirm, userType};
     dispatch(signUpAsync(params));
   }
 
@@ -41,6 +42,13 @@ const SignUp = () => {
 
   return (
     <Form className="container">
+      <Form.Group className="mb-3" controlId="formBasicEmail">
+        <Form.Label>이름</Form.Label>
+        <Form.Control placeholder="홍길동" value={name} onChange={(e) => setName(e.target.value)} />
+        <Form.Text className="text-muted">GrandParents 는 사용자의 이메일을 공개하지 않습니다.</Form.Text><br/>
+        {isError() && <Form.Text className="text-danger">{emailError('email')}</Form.Text>}
+      </Form.Group>
+
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>이메일</Form.Label>
         <Form.Control type="email" placeholder="name@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />

@@ -13,6 +13,8 @@ public class Member extends BaseTimeEntity {
     @Id @GeneratedValue
     private Long id;
 
+    private String name;
+
     @Column(unique = true)
     private String email;
 
@@ -24,8 +26,6 @@ public class Member extends BaseTimeEntity {
     private boolean emailVerified;
 
     private String emailCheckToken;
-
-    private String name;
 
     private String address;
 

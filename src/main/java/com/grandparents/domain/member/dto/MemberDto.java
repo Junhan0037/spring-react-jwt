@@ -16,6 +16,10 @@ public class MemberDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RequestDto {
+
+        @NotBlank
+        private String name;
+
         @NotBlank
         @Email
         private String email;

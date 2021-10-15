@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import http from "../../config/axios-interceptor";
 
 export interface memberState {
+  name: string,
   email: string,
   status: string,
   error: any,
@@ -10,6 +11,7 @@ export interface memberState {
 }
 
 const initialState: memberState = {
+  name: '',
   email: '',
   status: 'idle',
   error: [],
