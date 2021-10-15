@@ -5,12 +5,16 @@ export interface memberState {
   email: string,
   status: string,
   error: any,
+  accessToken: string,
+  refreshToken: string,
 }
 
 const initialState: memberState = {
   email: '',
   status: 'idle',
   error: [],
+  accessToken: '',
+  refreshToken: '',
 }
 
 export const signUpAsync = createAsyncThunk('member/signUp', async (params: any, thunkAPI: any) => {
@@ -21,13 +25,18 @@ export const signUpAsync = createAsyncThunk('member/signUp', async (params: any,
   }
 })
 
+export const loginAsync = createAsyncThunk('member/login', async (params: any, thunkAPI: any) => {
+  try {
+    return await http.post('/auth/login', params);
+  } catch (e: any) {
+    return thunkAPI.rejectWithValue(await e.response.data);
+  }
+})
+
 export const memberSlice = createSlice({
   name: 'member',
   initialState,
   reducers: {
-    login: (state, action) => {
-
-    },
     logout: (state, action) => {
 
     },
@@ -35,23 +44,34 @@ export const memberSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(signUpAsync.pending, (state, action) => {
-        state.status = 'loading';
+        state.status = 'signUpLoading';
       })
       .addCase(signUpAsync.fulfilled, (state, action) => {
         const {email} = action.payload;
         state.email = email;
-        state.status = 'success';
+        state.status = 'signUpSuccess';
       })
       .addCase(signUpAsync.rejected, (state, action: any) => {
         state.error = [];
+        state.status = 'signUpError';
         const errors = action.payload;
         errors.forEach((error: any) => {
           const {defaultMessage, field} = error;
           state.error = [...state.error, {defaultMessage, field}];
         })
-        state.status = 'error';
+      })
+      .addCase(loginAsync.pending, (state, action) => {
+        state.status = 'loginLoading';
+      })
+      .addCase(loginAsync.fulfilled, (state, action) => {
+        state.status = 'loginSuccess';
+        state.accessToken = action.payload['accessToken'];
+        state.refreshToken = action.payload['refreshToken'];
+      })
+      .addCase(loginAsync.rejected, (state, action: any) => {
+        state.status = 'loginError'
       })
   }
 })
 
-export const { login, logout } = memberSlice.actions;
+export const { logout } = memberSlice.actions;

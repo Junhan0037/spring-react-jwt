@@ -20,7 +20,7 @@ const SignUp = () => {
   }
 
   const isError = () => {
-    return memberStatus === 'error';
+    return memberStatus === 'signUpError';
   }
 
   const emailError = (field: string) => {
@@ -64,8 +64,8 @@ const SignUp = () => {
         가입하기
       </Button>
 
-      {memberStatus === 'loading' && <Spinner animation="border" />}
-      {memberStatus === 'success' && <Redirect to="/" />}
+      {memberStatus === 'signUpLoading' && <Spinner animation="border" />}
+      {memberStatus === 'signUpSuccess' && <Redirect to="/" />}
     </Form>
   )
 }

@@ -80,7 +80,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         // Login ID/PW 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = memberRequestDto.toAuthentication();
 
-        // 검증
+        // 검증 (loadUserByUsername 실행)
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 인증 정보를 기반으로 JWT 토큰 생성
