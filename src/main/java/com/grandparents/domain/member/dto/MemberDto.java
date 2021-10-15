@@ -28,6 +28,7 @@ public class MemberDto {
         @Length(min = 8, max = 50)
         private String passwordConfirm;
 
+        private String userType;
         private Role role;
 
         public UsernamePasswordAuthenticationToken toAuthentication() {

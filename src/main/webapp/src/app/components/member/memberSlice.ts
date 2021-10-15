@@ -47,8 +47,6 @@ export const memberSlice = createSlice({
         state.status = 'signUpLoading';
       })
       .addCase(signUpAsync.fulfilled, (state, action) => {
-        const {email} = action.payload;
-        state.email = email;
         state.status = 'signUpSuccess';
       })
       .addCase(signUpAsync.rejected, (state, action: any) => {
@@ -60,6 +58,7 @@ export const memberSlice = createSlice({
           state.error = [...state.error, {defaultMessage, field}];
         })
       })
+
       .addCase(loginAsync.pending, (state, action) => {
         state.status = 'loginLoading';
       })

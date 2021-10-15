@@ -50,7 +50,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
     private Member saveNewAccount(MemberDto.RequestDto memberRequestDto) {
         memberRequestDto.setPassword(passwordEncoder.encode(memberRequestDto.getPassword()));
-        memberRequestDto.setRole(Role.USER);
+        memberRequestDto.setRole(memberRequestDto.getUserType().equals("USER") ? Role.USER : Role.ASSISTANT);
         Member member = modelMapper.map(memberRequestDto, Member.class);
         return memberRepository.save(member);
     }

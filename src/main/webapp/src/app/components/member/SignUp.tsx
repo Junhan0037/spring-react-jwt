@@ -13,9 +13,15 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [userType, setUserType] = useState('');
 
   const submit = () => {
-    const params = {email, password, passwordConfirm};
+    if (userType === '' || userType === 'error') {
+      setUserType('error');
+      return;
+    }
+
+    const params = {email, password, passwordConfirm, userType};
     dispatch(signUpAsync(params));
   }
 
@@ -55,6 +61,10 @@ const SignUp = () => {
         <Form.Text className="text-muted">패스워드를 다시 한번 입력하세요.</Form.Text><br/>
         {isError() && <Form.Text className="text-danger">{emailError('passwordConfirm')}</Form.Text>}
       </Form.Group>
+
+      <Form.Check inline label="일반 사용자" name="group1" type="radio" id="radio-1" onChange={() => setUserType('USER')} />
+      <Form.Check inline label="요양 보호사" name="group1" type="radio" id="radio-2" onChange={() => setUserType('ASSISTANT')} />
+      {userType === 'error' && <Form.Text className="text-danger">사용자 유형을 선택하세요.</Form.Text>}
 
       <Form.Group className="mb-3" controlId="formBasicCheckbox">
         <Form.Check type="checkbox" label="약관 동의" />
