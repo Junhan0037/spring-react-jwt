@@ -16,6 +16,10 @@ public class MemberDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RequestDto {
+
+        @NotBlank
+        private String name;
+
         @NotBlank
         @Email
         private String email;
@@ -28,6 +32,7 @@ public class MemberDto {
         @Length(min = 8, max = 50)
         private String passwordConfirm;
 
+        private String userType;
         private Role role;
 
         public UsernamePasswordAuthenticationToken toAuthentication() {
