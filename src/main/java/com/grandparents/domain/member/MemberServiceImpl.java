@@ -26,6 +26,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -92,6 +93,11 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
                                                 .value(tokenDto.getRefreshToken())
                                                 .build();
         refreshTokenRepository.save(refreshToken);
+
+        // 회원 이름, 이메일
+        Member member = memberRepository.findByEmail(memberRequestDto.getEmail()).get();
+        tokenDto.setName(member.getName());
+        tokenDto.setEmail(member.getEmail());
 
         // 토큰 발급
         return tokenDto;

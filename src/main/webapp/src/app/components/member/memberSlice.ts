@@ -39,8 +39,13 @@ export const memberSlice = createSlice({
   name: 'member',
   initialState,
   reducers: {
-    logout: (state, action) => {
-
+    logout: (state) => {
+      state.name = '';
+      state.email = '';
+      state.status = 'idle';
+      state.error = [];
+      state.accessToken = '';
+      state.refreshToken = '';
     },
   },
   extraReducers: (builder) => {
@@ -68,6 +73,8 @@ export const memberSlice = createSlice({
         state.status = 'loginSuccess';
         state.accessToken = action.payload['accessToken'];
         state.refreshToken = action.payload['refreshToken'];
+        state.name = action.payload['name'];
+        state.email = action.payload['email'];
       })
       .addCase(loginAsync.rejected, (state, action: any) => {
         state.status = 'loginError'

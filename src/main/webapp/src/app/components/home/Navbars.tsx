@@ -1,6 +1,16 @@
 import {Button, Container, Form, FormControl, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {useDispatch, useSelector} from "react-redux";
+import { logout } from "../member/memberSlice";
 
 const Navbars = () => {
+  const dispatch = useDispatch();
+
+  const memberStatus = useSelector((state: any) => state.member.status);
+
+  const submit = () => {
+    dispatch(logout());
+  }
+
   return (
     <Navbar bg="light" expand="lg">
       <Container fluid>
@@ -14,17 +24,15 @@ const Navbars = () => {
           >
             <Nav.Link href="/">Home</Nav.Link>
             <NavDropdown title="회원" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="/auth/login">로그인</NavDropdown.Item>
-              <NavDropdown.Item href="/auth/sign-up">회원가입</NavDropdown.Item>
+              {memberStatus !== 'loginSuccess' && <NavDropdown.Item href="/auth/login">로그인</NavDropdown.Item>}
+              {memberStatus !== 'loginSuccess' && <NavDropdown.Item href="/auth/sign-up">회원가입</NavDropdown.Item>}
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">
-                Something else here
-              </NavDropdown.Item>
+              <NavDropdown.Item href="/counter">카운터 예제</NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link href="/counter">카운터 예제</Nav.Link>
             <Nav.Link href="#" disabled>
               미활성
             </Nav.Link>
+            {memberStatus === 'loginSuccess' && <Button variant="outline-danger" onClick={submit}>Logout</Button>}
           </Nav>
           <Form className="d-flex">
             <FormControl
