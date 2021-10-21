@@ -35,6 +35,14 @@ export const loginAsync = createAsyncThunk('member/login', async (params: any, t
   }
 })
 
+export const registerAsync = createAsyncThunk('member/register', async (params: any, thunkAPI: any) => {
+  try {
+    return await http.post('/auth/register');
+  } catch (e: any) {
+    return thunkAPI.rejectWithValue(await e.response.data);
+  }
+})
+
 export const memberSlice = createSlice({
   name: 'member',
   initialState,
@@ -77,7 +85,17 @@ export const memberSlice = createSlice({
         state.email = action.payload['email'];
       })
       .addCase(loginAsync.rejected, (state, action: any) => {
-        state.status = 'loginError'
+        state.status = 'loginError';
+      })
+
+      .addCase(registerAsync.pending, (state, action) => {
+        state.status = 'registerLoading';
+      })
+      .addCase(registerAsync.fulfilled, (state, action) => {
+        state.status = 'registerSuccess';
+      })
+      .addCase(registerAsync.rejected, (state, action) => {
+        state.status = 'registerError';
       })
   }
 })

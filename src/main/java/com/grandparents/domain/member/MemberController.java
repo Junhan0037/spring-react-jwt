@@ -43,4 +43,9 @@ public class MemberController {
         return ResponseEntity.ok(memberService.reIssue(tokenRequestDto));
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register() {
+        return ResponseEntity.ok(null);
+    }
+
 }
