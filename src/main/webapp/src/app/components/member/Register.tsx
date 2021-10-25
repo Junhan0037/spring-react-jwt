@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {Button, Form, ListGroup, ListGroupItem} from "react-bootstrap";
+import {Button, Form, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
 import {clearSearchAssistant, registerAsync, searchAssistantAsync} from "./memberSlice";
 import {useState} from "react";
 
@@ -10,8 +10,10 @@ const Register = () => {
 
   const [name, setName] = useState('');
   const [assistant, setAssistant] = useState('');
+  const [lgShow, setLgShow] = useState(false);
 
   const searchAssistant = () => {
+    setLgShow(true); // modal On
     const params = {name};
     dispatch(searchAssistantAsync(params));
   }
@@ -19,6 +21,7 @@ const Register = () => {
   const chooseAssistant = (index: any) => {
     const email = searchResult[index];
     setAssistant(email);
+    setLgShow(false); // modal Off
     dispatch(clearSearchAssistant());
   }
 
@@ -38,11 +41,26 @@ const Register = () => {
         </Button>
         <br />
 
-        <ListGroup>
-          {searchResult.map((data: string, index: any) => (
-            <ListGroupItem key={index}>{data}<Button variant="warning" onClick={() => chooseAssistant(index)}>선택</Button></ListGroupItem>
-          ))}
-        </ListGroup>
+        <Modal
+          size="lg"
+          show={lgShow}
+          onHide={() => setLgShow(false)}
+          aria-labelledby="example-modal-sizes-title-lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-lg">
+              Large Modal
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <ListGroup>
+              {searchResult.map((data: string, index: any) => (
+                <ListGroupItem key={index}>{data}<Button variant="warning" onClick={() => chooseAssistant(index)}>선택</Button></ListGroupItem>
+              ))}
+            </ListGroup>
+          </Modal.Body>
+        </Modal>
+        <br />
 
         <Button variant="primary" onClick={submit} >
           등록하기
