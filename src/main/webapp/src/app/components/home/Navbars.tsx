@@ -31,7 +31,6 @@ const Navbars = () => {
               <NavDropdown.Item><Link to='/counter'>카운터 예제</Link></NavDropdown.Item>
             </NavDropdown>
             {memberLoginStatus === 'loginSuccess' && <Link to="/auth/register">요양보호사 등록</Link>}
-            <Nav.Link disabled>미활성</Nav.Link>
             {memberLoginStatus === 'loginSuccess' && <Button variant="outline-danger" onClick={submit}>Logout</Button>}
           </Nav>
           <Form className="d-flex">
