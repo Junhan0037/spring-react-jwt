@@ -142,7 +142,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
     @Override
     public List<String> searchAssistant(String name) {
-        return memberRepository.findByNameContaining(name).stream().map(Member::getName).collect(Collectors.toList());
+        return memberRepository.findByNameContainingAndRole(name, Role.ASSISTANT).stream().map(Member::getName).collect(Collectors.toList());
     }
 
     /**
