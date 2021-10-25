@@ -5,18 +5,22 @@ export interface memberState {
   name: string,
   email: string,
   status: string,
+  isLogin: string,
   error: any,
   accessToken: string,
   refreshToken: string,
+  searchAssistant: string[],
 }
 
 const initialState: memberState = {
   name: '',
   email: '',
   status: 'idle',
+  isLogin: '',
   error: [],
   accessToken: '',
   refreshToken: '',
+  searchAssistant: [],
 }
 
 export const signUpAsync = createAsyncThunk('member/signUp', async (params: any, thunkAPI: any) => {
@@ -43,6 +47,14 @@ export const registerAsync = createAsyncThunk('member/register', async (params: 
   }
 })
 
+export const searchAssistantAsync = createAsyncThunk('member/register/search', async (params: any, thunkAPI: any) => {
+  try {
+    return await http.post('/auth/register/search', params);
+  } catch (e: any) {
+    return thunkAPI.rejectWithValue(await e.response.data);
+  }
+})
+
 export const memberSlice = createSlice({
   name: 'member',
   initialState,
@@ -51,9 +63,14 @@ export const memberSlice = createSlice({
       state.name = '';
       state.email = '';
       state.status = 'idle';
+      state.isLogin = 'idle'
       state.error = [];
       state.accessToken = '';
       state.refreshToken = '';
+      state.searchAssistant = [];
+    },
+    clearSearchAssistant: (state) => {
+      state.searchAssistant = [];
     },
   },
   extraReducers: (builder) => {
@@ -75,17 +92,17 @@ export const memberSlice = createSlice({
       })
 
       .addCase(loginAsync.pending, (state, action) => {
-        state.status = 'loginLoading';
+        state.isLogin = 'loginLoading';
       })
       .addCase(loginAsync.fulfilled, (state, action) => {
-        state.status = 'loginSuccess';
+        state.isLogin = 'loginSuccess';
         state.accessToken = action.payload['accessToken'];
         state.refreshToken = action.payload['refreshToken'];
         state.name = action.payload['name'];
         state.email = action.payload['email'];
       })
       .addCase(loginAsync.rejected, (state, action: any) => {
-        state.status = 'loginError';
+        state.isLogin = 'loginError';
       })
 
       .addCase(registerAsync.pending, (state, action) => {
@@ -97,7 +114,18 @@ export const memberSlice = createSlice({
       .addCase(registerAsync.rejected, (state, action) => {
         state.status = 'registerError';
       })
+
+      .addCase(searchAssistantAsync.pending, (state, action) => {
+        state.status = 'searchLoading';
+      })
+      .addCase(searchAssistantAsync.fulfilled, (state, action) => {
+        state.status = 'searchSuccess';
+        state.searchAssistant = action.payload;
+      })
+      .addCase(searchAssistantAsync.rejected, (state, action) => {
+        state.status = 'searchError';
+      })
   }
 })
 
-export const { logout } = memberSlice.actions;
+export const { logout, clearSearchAssistant } = memberSlice.actions;

@@ -26,7 +26,9 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -138,7 +140,16 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         return newTokenDto;
     }
 
+    @Override
+    public List<String> searchAssistant(String name) {
+        return memberRepository.findByNameContaining(name).stream().map(Member::getName).collect(Collectors.toList());
+    }
 
+    /**
+     * UserDetails 생성
+     * @param member
+     * @return UserDetails
+     */
     private UserDetails createUserDetails(Member member) {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getRole().toString());
         return new User(String.valueOf(member.getId()), member.getPassword(), Collections.singleton(grantedAuthority));

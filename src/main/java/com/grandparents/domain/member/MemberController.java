@@ -10,6 +10,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -46,6 +47,11 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseEntity<?> register() {
         return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/register/search")
+    public ResponseEntity<?> registerSearch(@RequestBody MemberDto.RequestDto memberRequestDto) {
+        return ResponseEntity.ok(memberService.searchAssistant(memberRequestDto.getName()));
     }
 
 }
