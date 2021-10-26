@@ -7,7 +7,7 @@ import {Redirect} from "react-router-dom";
 const Login = () => {
   const dispatch = useDispatch();
 
-  const memberStatus = useSelector((state: any) => state.member.status);
+  const memberLoginStatus = useSelector((state: any) => state.member.isLogin);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +18,7 @@ const Login = () => {
   }
 
   const isError = () => {
-    return memberStatus === 'loginError';
+    return memberLoginStatus === 'loginError';
   }
 
   return (
@@ -43,8 +43,8 @@ const Login = () => {
           로그인
         </Button>
 
-        {memberStatus === 'loginLoading' && <Spinner animation="border" />}
-        {memberStatus === 'loginSuccess' && <Redirect to="/" />}
+        {memberLoginStatus === 'loginLoading' && <Spinner animation="border" />}
+        {memberLoginStatus === 'loginSuccess' && <Redirect to="/" />}
       </Form>
     </>
   )

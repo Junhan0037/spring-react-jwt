@@ -43,4 +43,14 @@ public class MemberController {
         return ResponseEntity.ok(memberService.reIssue(tokenRequestDto));
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody MemberDto.RequestDto memberRequestDto) {
+        return ResponseEntity.ok(memberService.registerAssistant(memberRequestDto.getEmail()));
+    }
+
+    @PostMapping("/register/search")
+    public ResponseEntity<?> registerSearch(@RequestBody MemberDto.RequestDto memberRequestDto) {
+        return ResponseEntity.ok(memberService.searchAssistant(memberRequestDto.getName()));
+    }
+
 }

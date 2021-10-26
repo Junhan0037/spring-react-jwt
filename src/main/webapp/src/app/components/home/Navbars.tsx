@@ -1,10 +1,21 @@
 import {Button, Container, Form, FormControl, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {useDispatch, useSelector} from "react-redux";
+import {Link} from "react-router-dom";
+import {logout} from "../member/memberSlice";
 
 const Navbars = () => {
+  const dispatch = useDispatch();
+
+  const memberLoginStatus = useSelector((state: any) => state.member.isLogin);
+
+  const submit = () => {
+    dispatch(logout());
+  }
+
   return (
     <Navbar bg="light" expand="lg">
       <Container fluid>
-        <Navbar.Brand href="/">GrandParents</Navbar.Brand>
+        <Navbar.Brand><Link to=''>GrandParents</Link></Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav
@@ -12,19 +23,15 @@ const Navbars = () => {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-            <Nav.Link href="/">Home</Nav.Link>
+            <Link to='/'>Home</Link>
             <NavDropdown title="회원" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="/auth/login">로그인</NavDropdown.Item>
-              <NavDropdown.Item href="/auth/sign-up">회원가입</NavDropdown.Item>
+              {memberLoginStatus !== 'loginSuccess' && <NavDropdown.Item><Link to='/auth/login'>로그인</Link></NavDropdown.Item>}
+              {memberLoginStatus !== 'loginSuccess' && <NavDropdown.Item><Link to='/auth/sign-up'>회원가입</Link></NavDropdown.Item>}
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">
-                Something else here
-              </NavDropdown.Item>
+              <NavDropdown.Item><Link to='/counter'>카운터 예제</Link></NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link href="/counter">카운터 예제</Nav.Link>
-            <Nav.Link href="#" disabled>
-              미활성
-            </Nav.Link>
+            {memberLoginStatus === 'loginSuccess' && <Link to="/auth/register">요양보호사 등록</Link>}
+            {memberLoginStatus === 'loginSuccess' && <Link to='/'><Button variant="outline-danger" onClick={submit}>Logout</Button></Link>}
           </Nav>
           <Form className="d-flex">
             <FormControl

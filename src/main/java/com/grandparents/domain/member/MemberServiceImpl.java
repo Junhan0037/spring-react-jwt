@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,6 +27,9 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +97,11 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
                                                 .build();
         refreshTokenRepository.save(refreshToken);
 
+        // 회원 이름, 이메일
+        Member member = memberRepository.findByEmail(memberRequestDto.getEmail()).get();
+        tokenDto.setName(member.getName());
+        tokenDto.setEmail(member.getEmail());
+
         // 토큰 발급
         return tokenDto;
     }
@@ -132,7 +141,34 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         return newTokenDto;
     }
 
+    @Override
+    public MemberDto.ResponseDto registerAssistant(String email) {
+        // JWT 파싱한 사용자
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = memberRepository.findById(Long.valueOf(user.getUsername())).orElseThrow(() -> new UsernameNotFoundException(user.getUsername() + " -> 데이터베이스에서 찾을 수 없습니다."));
 
+        // 새로운 요양 보호사
+        Member newAssistant = memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email + " -> 데이터베이스에서 찾을 수 없습니다."));
+
+        // 등록
+        member.changeAssistant(newAssistant);
+
+        // 저장
+        memberRepository.save(member);
+
+        return modelMapper.map(member.getAssistant(), MemberDto.ResponseDto.class);
+    }
+
+    @Override
+    public List<String> searchAssistant(String name) {
+        return memberRepository.findByNameContainingAndRole(name, Role.ASSISTANT).stream().map(Member::getEmail).collect(Collectors.toList());
+    }
+
+    /**
+     * UserDetails 생성
+     * @param member
+     * @return UserDetails
+     */
     private UserDetails createUserDetails(Member member) {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getRole().toString());
         return new User(String.valueOf(member.getId()), member.getPassword(), Collections.singleton(grantedAuthority));
