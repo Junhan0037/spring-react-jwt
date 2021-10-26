@@ -39,17 +39,17 @@ export const loginAsync = createAsyncThunk('member/login', async (params: any, t
   }
 })
 
-export const registerAsync = createAsyncThunk('member/register', async (params: any, thunkAPI: any) => {
+export const searchAssistantAsync = createAsyncThunk('member/register/search', async (params: any, thunkAPI: any) => {
   try {
-    return await http.post('/auth/register');
+    return await http.post('/auth/register/search', params);
   } catch (e: any) {
     return thunkAPI.rejectWithValue(await e.response.data);
   }
 })
 
-export const searchAssistantAsync = createAsyncThunk('member/register/search', async (params: any, thunkAPI: any) => {
+export const registerAsync = createAsyncThunk('member/register', async (params: any, thunkAPI: any) => {
   try {
-    return await http.post('/auth/register/search', params);
+    return await http.post('/auth/register', params);
   } catch (e: any) {
     return thunkAPI.rejectWithValue(await e.response.data);
   }
@@ -59,15 +59,9 @@ export const memberSlice = createSlice({
   name: 'member',
   initialState,
   reducers: {
-    logout: (state) => {
-      state.name = '';
-      state.email = '';
-      state.status = 'idle';
-      state.isLogin = 'idle'
-      state.error = [];
-      state.accessToken = '';
-      state.refreshToken = '';
-      state.searchAssistant = [];
+    logout: () => {
+      http.defaults.headers.common['Authorization'] = '';
+      return initialState;
     },
     clearSearchAssistant: (state) => {
       state.searchAssistant = [];
@@ -100,6 +94,8 @@ export const memberSlice = createSlice({
         state.refreshToken = action.payload['refreshToken'];
         state.name = action.payload['name'];
         state.email = action.payload['email'];
+
+        http.defaults.headers.common['Authorization'] = `Bearer ${action.payload['accessToken']}`;
       })
       .addCase(loginAsync.rejected, (state, action: any) => {
         state.isLogin = 'loginError';

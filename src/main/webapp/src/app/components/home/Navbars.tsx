@@ -31,7 +31,7 @@ const Navbars = () => {
               <NavDropdown.Item><Link to='/counter'>카운터 예제</Link></NavDropdown.Item>
             </NavDropdown>
             {memberLoginStatus === 'loginSuccess' && <Link to="/auth/register">요양보호사 등록</Link>}
-            {memberLoginStatus === 'loginSuccess' && <Button variant="outline-danger" onClick={submit}>Logout</Button>}
+            {memberLoginStatus === 'loginSuccess' && <Link to='/'><Button variant="outline-danger" onClick={submit}>Logout</Button></Link>}
           </Nav>
           <Form className="d-flex">
             <FormControl

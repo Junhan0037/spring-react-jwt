@@ -2,8 +2,7 @@ package com.grandparents.config;
 
 import com.grandparents.jwt.JwtAccessDeniedHandler;
 import com.grandparents.jwt.JwtAuthenticationEntryPoint;
-import com.grandparents.jwt.JwtSecurityConfig;
-import com.grandparents.jwt.TokenProvider;
+import com.grandparents.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
@@ -12,15 +11,16 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtFilter jwtFilter;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -42,10 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-                .mvcMatchers("/", "/auth/**").permitAll()
+                .mvcMatchers("/", "/auth/sign-up", "/auth/login", "/auth/re-issue").permitAll()
                 .anyRequest().authenticated();
 
-        http.apply(new JwtSecurityConfig(tokenProvider));
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
 }

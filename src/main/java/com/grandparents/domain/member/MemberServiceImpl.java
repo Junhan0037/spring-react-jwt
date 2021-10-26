@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -141,8 +142,26 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     }
 
     @Override
+    public MemberDto.ResponseDto registerAssistant(String email) {
+        // JWT 파싱한 사용자
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = memberRepository.findById(Long.valueOf(user.getUsername())).orElseThrow(() -> new UsernameNotFoundException(user.getUsername() + " -> 데이터베이스에서 찾을 수 없습니다."));
+
+        // 새로운 요양 보호사
+        Member newAssistant = memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email + " -> 데이터베이스에서 찾을 수 없습니다."));
+
+        // 등록
+        member.changeAssistant(newAssistant);
+
+        // 저장
+        memberRepository.save(member);
+
+        return modelMapper.map(member.getAssistant(), MemberDto.ResponseDto.class);
+    }
+
+    @Override
     public List<String> searchAssistant(String name) {
-        return memberRepository.findByNameContainingAndRole(name, Role.ASSISTANT).stream().map(Member::getName).collect(Collectors.toList());
+        return memberRepository.findByNameContainingAndRole(name, Role.ASSISTANT).stream().map(Member::getEmail).collect(Collectors.toList());
     }
 
     /**

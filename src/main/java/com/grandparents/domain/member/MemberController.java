@@ -44,8 +44,8 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register() {
-        return ResponseEntity.ok(null);
+    public ResponseEntity<?> register(@RequestBody MemberDto.RequestDto memberRequestDto) {
+        return ResponseEntity.ok(memberService.registerAssistant(memberRequestDto.getEmail()));
     }
 
     @PostMapping("/register/search")

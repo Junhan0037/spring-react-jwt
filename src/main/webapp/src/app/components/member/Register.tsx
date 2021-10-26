@@ -26,7 +26,8 @@ const Register = () => {
   }
 
   const submit = () => {
-    dispatch(registerAsync(assistant));
+    const params = {email: assistant};
+    dispatch(registerAsync(params));
   }
 
   return (
@@ -35,6 +36,9 @@ const Register = () => {
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>요양 보호사 이름</Form.Label>
           <Form.Control placeholder="홍길동" value={name} onChange={(e) => setName(e.target.value)} />
+          <br />
+          {assistant && <Form.Label>요양 보호사 정보</Form.Label>}
+          {assistant && <h5>{assistant}</h5>}
         </Form.Group>
         <Button variant="info" onClick={searchAssistant} >
           검색
@@ -66,7 +70,6 @@ const Register = () => {
           등록하기
         </Button>
 
-        <h5>{assistant}</h5>
       </Form>
     </>
   )

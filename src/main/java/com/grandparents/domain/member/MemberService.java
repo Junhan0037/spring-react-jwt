@@ -13,6 +13,8 @@ public interface MemberService {
 
     TokenDto.ResponseDto reIssue(TokenDto.RequestDto tokenRequestDto);
 
+    MemberDto.ResponseDto registerAssistant(String email);
+
     List<String> searchAssistant(String name);
 
 }
