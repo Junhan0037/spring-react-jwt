@@ -4,6 +4,7 @@ import http from "../../config/axios-interceptor";
 export interface memberState {
   name: string,
   email: string,
+  role: string,
   status: string,
   isLogin: string,
   error: any,
@@ -15,6 +16,7 @@ export interface memberState {
 const initialState: memberState = {
   name: '',
   email: '',
+  role: '',
   status: 'idle',
   isLogin: '',
   error: [],
@@ -89,11 +91,13 @@ export const memberSlice = createSlice({
         state.isLogin = 'loginLoading';
       })
       .addCase(loginAsync.fulfilled, (state, action) => {
+        const {accessToken, refreshToken, name, email, role} = action.payload;
         state.isLogin = 'loginSuccess';
-        state.accessToken = action.payload['accessToken'];
-        state.refreshToken = action.payload['refreshToken'];
-        state.name = action.payload['name'];
-        state.email = action.payload['email'];
+        state.accessToken = accessToken;
+        state.refreshToken = refreshToken;
+        state.name = name;
+        state.email = email;
+        state.role = role;
 
         http.defaults.headers.common['Authorization'] = `Bearer ${action.payload['accessToken']}`;
       })

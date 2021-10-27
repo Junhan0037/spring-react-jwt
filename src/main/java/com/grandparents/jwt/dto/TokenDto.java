@@ -1,5 +1,6 @@
 package com.grandparents.jwt.dto;
 
+import com.grandparents.domain.member.Role;
 import lombok.*;
 
 public class TokenDto {
@@ -24,6 +25,7 @@ public class TokenDto {
 
         private String name;
         private String email;
+        private Role role;
     }
 
 }

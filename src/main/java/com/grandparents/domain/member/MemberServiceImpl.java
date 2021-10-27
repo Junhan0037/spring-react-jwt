@@ -98,9 +98,10 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         refreshTokenRepository.save(refreshToken);
 
         // 회원 이름, 이메일
-        Member member = memberRepository.findByEmail(memberRequestDto.getEmail()).get();
+        Member member = memberRepository.findByEmail(memberRequestDto.getEmail()).orElseThrow(() -> new UsernameNotFoundException(memberRequestDto.getEmail() + " -> 데이터베이스에서 찾을 수 없습니다."));
         tokenDto.setName(member.getName());
         tokenDto.setEmail(member.getEmail());
+        tokenDto.setRole(member.getRole());
 
         // 토큰 발급
         return tokenDto;

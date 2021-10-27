@@ -8,6 +8,8 @@ const Navbars = () => {
   const dispatch = useDispatch();
 
   const memberLoginStatus = useSelector((state: any) => state.member.isLogin);
+  const userName = useSelector((state: any) => state.member.name);
+  const userRole = useSelector((state: any) => state.member.role);
 
   const submit = () => {
     dispatch(logout());
@@ -24,14 +26,14 @@ const Navbars = () => {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-            <LinkContainer to='/'><Nav.Link>Home</Nav.Link></LinkContainer>
+            <LinkContainer to='/'><Nav.Link>{userName}</Nav.Link></LinkContainer>
             <NavDropdown title="회원" id="navbarScrollingDropdown">
               {memberLoginStatus !== 'loginSuccess' && <LinkContainer to='/auth/login'><NavDropdown.Item>로그인</NavDropdown.Item></LinkContainer>}
               {memberLoginStatus !== 'loginSuccess' && <LinkContainer to='/auth/sign-up'><NavDropdown.Item>회원가입</NavDropdown.Item></LinkContainer>}
               <NavDropdown.Divider />
               <LinkContainer to='/counter'><NavDropdown.Item>카운터 예제</NavDropdown.Item></LinkContainer>
             </NavDropdown>
-            {memberLoginStatus === 'loginSuccess' && <LinkContainer to='/auth/register'><Nav.Link>요양보호사 등록</Nav.Link></LinkContainer>}
+            {memberLoginStatus === 'loginSuccess' && userRole === 'USER' && <LinkContainer to='/auth/register'><Nav.Link>요양보호사 등록</Nav.Link></LinkContainer>}
             {memberLoginStatus === 'loginSuccess' && <Link to='/'><Button variant="outline-danger" onClick={submit}>Logout</Button></Link>}
           </Nav>
           <Form className="d-flex">

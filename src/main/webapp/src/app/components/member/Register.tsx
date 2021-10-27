@@ -2,11 +2,13 @@ import {useDispatch, useSelector} from "react-redux";
 import {Button, Form, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
 import {clearSearchAssistant, registerAsync, searchAssistantAsync} from "./memberSlice";
 import {useState} from "react";
+import {Redirect} from "react-router-dom";
 
 const Register = () => {
   const dispatch = useDispatch();
 
   const searchResult = useSelector((state: any) => state.member.searchAssistant);
+  const userRole = useSelector((state: any) => state.member.role);
 
   const [name, setName] = useState('');
   const [assistant, setAssistant] = useState('');
@@ -70,6 +72,7 @@ const Register = () => {
           등록하기
         </Button>
 
+        {userRole !== 'USER' && <Redirect to="/" />}
       </Form>
     </>
   )
