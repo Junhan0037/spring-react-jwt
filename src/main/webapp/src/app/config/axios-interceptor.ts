@@ -25,13 +25,10 @@ http.interceptors.response.use(
 
     if (response) {
       if (response.status >= 400 && response.status < 500) {
-        console.log('error', response.status, response.data?.errorCode)
-        console.log('error', response.status, response.data?.errorMessage)
 
-        // store.dispatch(userSlice.actions.clearAuthentication)
-        // store.dispatch(globalDialogSlice.actions.setError(true))
-        // store.dispatch(globalDialogSlice.actions.toggle(true))
-        // store.dispatch(globalDialogSlice.actions.error(response.data))
+        console.log('error', response.status, response.data?.message);
+        // store.dispatch(jwtExceptionSlice.actions.setError(response.data));
+
         throw error
         // return null
       }

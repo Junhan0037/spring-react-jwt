@@ -61,7 +61,7 @@ const Register = () => {
           <Modal.Body>
             <ListGroup>
               {searchResult.map((data: string, index: any) => (
-                <ListGroupItem key={index}>{data}<Button variant="warning" onClick={() => chooseAssistant(index)}>선택</Button></ListGroupItem>
+                <ListGroupItem key={index}>{data}<Button style={{marginLeft: '10px'}} variant="warning" onClick={() => chooseAssistant(index)}>선택</Button></ListGroupItem>
               ))}
             </ListGroup>
           </Modal.Body>

@@ -1,5 +1,6 @@
 package com.grandparents.config;
 
+import com.grandparents.exception.ExceptionHandlerFilter;
 import com.grandparents.jwt.JwtAccessDeniedHandler;
 import com.grandparents.jwt.JwtAuthenticationEntryPoint;
 import com.grandparents.jwt.JwtFilter;
@@ -21,6 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtFilter jwtFilter;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -46,6 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(exceptionHandlerFilter, JwtFilter.class);
+
     }
 
 }
