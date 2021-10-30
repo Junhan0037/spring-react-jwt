@@ -99,7 +99,7 @@ export const memberSlice = createSlice({
         state.email = email;
         state.role = role;
 
-        http.defaults.headers.common['Authorization'] = `Bearer ${action.payload['accessToken']}`;
+        http.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
       })
       .addCase(loginAsync.rejected, (state, action: any) => {
         state.isLogin = 'loginError';
