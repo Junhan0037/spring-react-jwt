@@ -68,6 +68,11 @@ export const memberSlice = createSlice({
     clearSearchAssistant: (state) => {
       state.searchAssistant = [];
     },
+    setJwt: (state, action: any) => {
+      const {newAccessToken, newRefreshToken} = action.payload;
+      state.accessToken = newAccessToken;
+      state.refreshToken = newRefreshToken;
+    },
   },
   extraReducers: (builder) => {
     builder

@@ -1,6 +1,7 @@
 import axios, {AxiosError, AxiosInstance, AxiosResponse} from "axios";
 import {jwtExceptionSlice, jwtReIssueAsync} from "../components/exception/jwtExceptionSlice";
 import {RootState} from "./store";
+import {memberSlice} from "../components/member/memberSlice";
 
 const http: AxiosInstance = axios.create({
   withCredentials: true,
@@ -9,12 +10,6 @@ const http: AxiosInstance = axios.create({
 
 http.defaults.headers.post['Content-Type'] = 'application/json'
 http.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest'
-
-const onRequestSuccess = (config: any) => {
-  return config
-}
-
-// http.interceptors.request.use(onRequestSuccess)
 
 http.interceptors.request.use(
   (config) => {
@@ -46,11 +41,10 @@ export const axiosInterceptorSetup = (store: any) => {
           const {accessToken, refreshToken} = member;
           const params = {accessToken, refreshToken};
 
-          // store.dispatch(jwtReIssueAsync(params));
-
-          const {data}: any = await http.post('/auth/re-issue', params);
+          const data: any = await http.post('/auth/re-issue', params);
           const {accessToken: newAccessToken, refreshToken: newRefreshToken} = data;
 
+          store.dispatch(memberSlice.actions.setJwt({newAccessToken, newRefreshToken}));
           http.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 

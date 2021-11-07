@@ -27,10 +27,12 @@ public class JwtFilter extends OncePerRequestFilter {
         // Request Header 에서 토큰 추출
         String jwt = resolveToken(request);
 
-        // ValidateToken 으로 토큰 유효성 검사
-        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        String requestUrl = request.getRequestURL().toString();
+        if (!requestUrl.contains("/auth/re-issue")) { // filter 제외
+            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) { // ValidateToken 으로 토큰 유효성 검사
+                Authentication authentication = tokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
 
         filterChain.doFilter(request, response);
