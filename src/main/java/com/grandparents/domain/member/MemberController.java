@@ -19,10 +19,10 @@ public class MemberController {
     private final MemberRequestDtoValidator memberRequestDtoValidator;
     private final MemberService memberService;
 
-//    @InitBinder
-//    public void initBinder(WebDataBinder webDataBinder) {
-//        webDataBinder.addValidators(memberRequestDtoValidator);
-//    }
+    @InitBinder
+    public void initBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(memberRequestDtoValidator);
+    }
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@Valid @RequestBody MemberDto.RequestDto memberRequestDto, Errors errors) {
@@ -36,11 +36,6 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<TokenDto.ResponseDto> login(@RequestBody MemberDto.RequestDto memberRequestDto) {
         return ResponseEntity.ok(memberService.login(memberRequestDto));
-    }
-
-    @PostMapping("/re-issue")
-    public ResponseEntity<TokenDto.ResponseDto> reIssue(@RequestBody TokenDto.RequestDto tokenRequestDto) {
-        return ResponseEntity.ok(memberService.reIssue(tokenRequestDto));
     }
 
     @PostMapping("/register")
