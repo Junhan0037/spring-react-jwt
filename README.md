@@ -9,4 +9,8 @@
 ![Webpack](https://img.shields.io/badge/Webpack-8DD6F9.svg?&style=for-the-badge&logo=Webpack&logoColor=333333)
 <!-- prettier-ignore-end -->
 
-할머니 일상 및 건강을 위한 애플리케이션
+### SpringBoot + React + JWT 환경 구축 프로젝트
+
+- 회원가입
+- 로그인
+- REST API
