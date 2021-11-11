@@ -1,5 +1,5 @@
 import {BrowserRouter, Route, Switch} from "react-router-dom";
-import NotFound from "../components/error/NotFound";
+import NotFound from "../components/exception/NotFound";
 import Home from "../components/home/Home";
 import Navbars from "../components/home/Navbars";
 import SignUp from "../components/member/SignUp";

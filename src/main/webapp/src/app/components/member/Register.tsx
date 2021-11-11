@@ -2,11 +2,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {Button, Form, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
 import {clearSearchAssistant, registerAsync, searchAssistantAsync} from "./memberSlice";
 import {useState} from "react";
+import {Redirect} from "react-router-dom";
 
 const Register = () => {
   const dispatch = useDispatch();
 
   const searchResult = useSelector((state: any) => state.member.searchAssistant);
+  const userRole = useSelector((state: any) => state.member.role);
+  const {time, status, message, isError} = useSelector((state: any) => state.jwtException);
 
   const [name, setName] = useState('');
   const [assistant, setAssistant] = useState('');
@@ -59,8 +62,9 @@ const Register = () => {
           <Modal.Body>
             <ListGroup>
               {searchResult.map((data: string, index: any) => (
-                <ListGroupItem key={index}>{data}<Button variant="warning" onClick={() => chooseAssistant(index)}>선택</Button></ListGroupItem>
+                <ListGroupItem key={index}>{data}<Button style={{marginLeft: '10px'}} variant="warning" onClick={() => chooseAssistant(index)}>선택</Button></ListGroupItem>
               ))}
+              {!searchResult.length && <ListGroupItem>No Data</ListGroupItem>}
             </ListGroup>
           </Modal.Body>
         </Modal>
@@ -70,6 +74,7 @@ const Register = () => {
           등록하기
         </Button>
 
+        {userRole !== 'USER' && <Redirect to="/" />}
       </Form>
     </>
   )

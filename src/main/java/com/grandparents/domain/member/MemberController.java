@@ -38,11 +38,6 @@ public class MemberController {
         return ResponseEntity.ok(memberService.login(memberRequestDto));
     }
 
-    @PostMapping("/re-issue")
-    public ResponseEntity<TokenDto.ResponseDto> reIssue(@RequestBody TokenDto.RequestDto tokenRequestDto) {
-        return ResponseEntity.ok(memberService.reIssue(tokenRequestDto));
-    }
-
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody MemberDto.RequestDto memberRequestDto) {
         return ResponseEntity.ok(memberService.registerAssistant(memberRequestDto.getEmail()));
